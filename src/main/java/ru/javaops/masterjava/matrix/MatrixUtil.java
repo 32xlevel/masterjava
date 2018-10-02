@@ -18,20 +18,48 @@ public class MatrixUtil {
         return matrixC;
     }
 
-    // TODO optimize by https://habrahabr.ru/post/114797/
     public static int[][] singleThreadMultiply(int[][] matrixA, int[][] matrixB) {
         final int matrixSize = matrixA.length;
         final int[][] matrixC = new int[matrixSize][matrixSize];
+
+        int[] thisColumn = new int[matrixSize];
+
+        try {
+            for (int i = 0; i < matrixSize; i++) {
+                for (int k = 0; k < matrixSize; k++) {
+                    thisColumn[k] = matrixB[k][i];
+                }
+
+                for (int j = 0; j < matrixSize; j++) {
+                    int[] thisRow = matrixA[i];
+                    int sum = 0;
+
+                    for (int k = 0; k < matrixSize; k++) {
+                        sum += thisRow[k] * thisColumn[k];
+                    }
+
+                    matrixC[j][i] = sum;
+                }
+            }
+        } catch (IndexOutOfBoundsException ignored) {
+        }
+
+        /*int cacheB[][] = new int[matrixSize][matrixSize];
+        for (int i = 0; i < matrixSize; i++) {
+            for (int j = 0; j < matrixSize; j++) {
+                cacheB[j][i] = matrixB[i][j];
+            }
+        }
 
         for (int i = 0; i < matrixSize; i++) {
             for (int j = 0; j < matrixSize; j++) {
                 int sum = 0;
                 for (int k = 0; k < matrixSize; k++) {
-                    sum += matrixA[i][k] * matrixB[k][j];
+                    sum += matrixA[i][k] * cacheB[j][k];
                 }
                 matrixC[i][j] = sum;
             }
-        }
+        }*/
         return matrixC;
     }
 
